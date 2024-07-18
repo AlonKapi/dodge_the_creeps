@@ -1,0 +1,71 @@
+[gd_scene load_steps=10 format=3 uid="uid://cgywxv7ki51nx"]
+
+[ext_resource type="Texture2D" uid="uid://b5oy7hgnchkcd" path="res://assets/sprites/enemyFlyingAlt_1.png" id="1_87t8n"]
+[ext_resource type="Script" path="res://scripts/mob.gd" id="1_tsmdt"]
+[ext_resource type="Texture2D" uid="uid://cccwcbslbpwi2" path="res://assets/sprites/enemyFlyingAlt_2.png" id="2_3s35i"]
+[ext_resource type="Texture2D" uid="uid://dxmhhprcdb3jw" path="res://assets/sprites/enemySwimming_1.png" id="3_p4uht"]
+[ext_resource type="Texture2D" uid="uid://b1w07dtgj0rte" path="res://assets/sprites/enemySwimming_2.png" id="4_qpe1t"]
+[ext_resource type="Texture2D" uid="uid://bb1kwafp8mqcl" path="res://assets/sprites/enemyWalking_1.png" id="5_0hi5t"]
+[ext_resource type="Texture2D" uid="uid://eweveyt0iv7v" path="res://assets/sprites/enemyWalking_2.png" id="6_0ttmh"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_fxrwu"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_87t8n")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_3s35i")
+}],
+"loop": true,
+"name": &"fly",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_p4uht")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_qpe1t")
+}],
+"loop": true,
+"name": &"swim",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_0hi5t")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_0ttmh")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 3.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_iutfn"]
+radius = 35.0
+height = 98.0
+
+[node name="Mob" type="RigidBody2D" node_paths=PackedStringArray("animation", "collision")]
+scale = Vector2(0.75, 0.75)
+collision_mask = 0
+gravity_scale = 0.0
+script = ExtResource("1_tsmdt")
+animation = NodePath("AnimatedSprite2D")
+collision = NodePath("CollisionShape2D")
+metadata/_edit_group_ = true
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.75, 0.75)
+sprite_frames = SubResource("SpriteFrames_fxrwu")
+animation = &"swim"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_iutfn")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+
+[connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="_on_visible_on_screen_notifier_2d_screen_exited"]
