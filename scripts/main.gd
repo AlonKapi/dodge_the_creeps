@@ -7,6 +7,7 @@ extends Node
 @onready var start_timer: Timer = $Timers/StartTimer
 @onready var score_timer: Timer = $Timers/ScoreTimer
 @onready var mob_timer: Timer = $Timers/MobTimer
+@onready var death_sound: AudioStreamPlayer = $DeathSound
 var score: int
 
 # Called when the node enters the scene tree for the first time.
@@ -20,6 +21,7 @@ func _process(delta):
 
 
 func _game_over():
+	death_sound.play()
 	HUD.show_game_over()
 	score_timer.stop()
 	mob_timer.stop()
