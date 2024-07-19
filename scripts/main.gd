@@ -1,6 +1,7 @@
 extends Node
 
 @export var mob_scene: PackedScene
+@onready var HUD: CanvasLayer = $HUD
 @onready var player: Area2D = $Player
 @onready var start_position: Marker2D = $StartPosition
 @onready var start_timer: Timer = $Timers/StartTimer
@@ -10,7 +11,7 @@ var score: int
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	new_game()
+	pass
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -19,12 +20,16 @@ func _process(delta):
 
 
 func _game_over():
+	HUD.show_game_over()
 	score_timer.stop()
 	mob_timer.stop()
 
 
 func new_game():
 	score = 0
+	get_tree().call_group("mobs", "queue_free")
+	HUD.update_score(score)
+	HUD.show_message("Get Ready")
 	player.start(start_position.position)
 	start_timer.start()
 
@@ -36,6 +41,7 @@ func _on_start_timer_timeout():
 
 func _on_score_timer_timeout():
 	score += 1
+	HUD.update_score(score)
 
 
 func _on_mob_timer_timeout():
@@ -62,3 +68,4 @@ func _on_mob_timer_timeout():
 	
 	# Spawn the mob by adding it to the Main scene.
 	add_child(mob)
+
