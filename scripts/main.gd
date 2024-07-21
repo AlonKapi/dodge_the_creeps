@@ -30,6 +30,7 @@ func _game_over():
 func new_game():
 	score = 0
 	get_tree().call_group("mobs", "queue_free")
+	get_tree().call_group("powerups", "queue_free")
 	HUD.update_score(score)
 	HUD.show_message("Get Ready")
 	player.start(start_position.position)
@@ -44,6 +45,10 @@ func _on_start_timer_timeout():
 func _on_score_timer_timeout():
 	score += 1
 	HUD.update_score(score)
+	if score % 2 == 0:
+		print("spawn a powerup")
+		var powerup: Powerup = Powerup.new_powerup(Powerup.POWERUP_TYPE.SCORE)
+		add_child(powerup)
 
 
 func _on_mob_timer_timeout():
