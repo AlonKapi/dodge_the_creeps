@@ -1,54 +1,41 @@
 extends Node
 
 @export var mob_scene: PackedScene
+@onready var powerup_manager = %PowerupManager
+@onready var score_manager = %ScoreManager
 @onready var HUD: CanvasLayer = $HUD
 @onready var player: Area2D = $Player
 @onready var start_position: Marker2D = $StartPosition
 @onready var start_timer: Timer = $Timers/StartTimer
-@onready var score_timer: Timer = $Timers/ScoreTimer
 @onready var mob_timer: Timer = $Timers/MobTimer
 @onready var death_sound: AudioStreamPlayer = $DeathSound
-var score: int
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
-
-
-func _game_over():
-	death_sound.play()
-	HUD.show_game_over()
-	score_timer.stop()
-	mob_timer.stop()
 
 
 func new_game():
-	score = 0
-	get_tree().call_group("mobs", "queue_free")
-	get_tree().call_group("powerups", "queue_free")
-	HUD.update_score(score)
+	HUD.update_score(0)
 	HUD.show_message("Get Ready")
 	player.start(start_position.position)
 	start_timer.start()
 
 
+func _game_over():
+	score_manager.stop()
+	mob_timer.stop()
+	powerup_manager.stopTimers()
+	death_sound.play()
+	HUD.show_game_over()
+	get_tree().call_group("mobs", "queue_free")
+	get_tree().call_group("powerups", "queue_free")
+
+
 func _on_start_timer_timeout():
 	mob_timer.start()
-	score_timer.start()
+	score_manager.start()
+	powerup_manager.startTimers()
 
 
-func _on_score_timer_timeout():
-	score += 1
-	HUD.update_score(score)
-	if score % 2 == 0:
-		print("spawn a powerup")
-		var powerup: Powerup = Powerup.new_powerup(Powerup.POWERUP_TYPE.SCORE)
-		add_child(powerup)
+func _on_score_manager_score_updated(new_score):
+	HUD.update_score(new_score)
 
 
 func _on_mob_timer_timeout():
@@ -76,3 +63,6 @@ func _on_mob_timer_timeout():
 	# Spawn the mob by adding it to the Main scene.
 	add_child(mob)
 
+
+func _on_powerup_manager_score_powerup_triggered():
+	score_manager.update_score(5)

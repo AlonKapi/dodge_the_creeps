@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://qxllh2spvfor"]
+
+[ext_resource type="Script" path="res://scripts/score_manager.gd" id="1_vyl61"]
+
+[node name="ScoreManager" type="Node"]
+script = ExtResource("1_vyl61")
+
+[node name="ScoreTimer" type="Timer" parent="."]
+wait_time = 1.5
+
+[connection signal="timeout" from="ScoreTimer" to="." method="_on_score_timer_timeout"]

@@ -2,6 +2,7 @@ class_name Powerup
 extends Area2D
 
 const scene: PackedScene = preload("res://scenes/powerup.tscn")
+enum POWERUP_TYPE { SCORE }
 
 @onready var sprite = $Sprite2D
 @onready var animation_player = $Sprite2D/AnimationPlayer
@@ -10,9 +11,7 @@ const scene: PackedScene = preload("res://scenes/powerup.tscn")
 @onready var expires_timer = $ExpiresTimer
 @onready var remove_timer = $RemoveTimer
 
-enum POWERUP_TYPE { SCORE }
 var type: POWERUP_TYPE
-
 
 static func new_powerup(new_powerup_type: POWERUP_TYPE):
 	var powerup: Powerup = scene.instantiate()
@@ -45,7 +44,7 @@ func _on_area_entered(area):
 func powerup_effect():
 	powerup_sound.play()
 	remove()
-	print("add 10 points")
+	get_parent().trigger_powerup(type)
 
 
 func remove():
